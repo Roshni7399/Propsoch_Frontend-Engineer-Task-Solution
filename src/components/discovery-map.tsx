@@ -41,6 +41,7 @@ import { LocationType, projectListing } from "@/types/types";
 import { Badge } from "./badge";
 import { renderToString } from "react-dom/server";
 import dynamic from "next/dynamic";
+import MarkerClusterGroup from "react-leaflet-cluster";
 
 interface Location {
   lat: number;
@@ -102,12 +103,14 @@ function MapController({
 export default function DiscoveryMap({
   allFilteredData,
 }: Readonly<{ allFilteredData: any }>) {
-  const [selectedLocation, setSelectedLocation] = useState<LocationType | null>(
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
   );
   const sectionRef = useRef(null);
   const [selectedProperty, setSelectedProperty] =
     useState<projectListing | null>(null);
+  const markerRefs = useRef<Record<string, LeafletMarker | null>>({});
+
 
   useEffect(() => {
     if (selectedLocation) {
@@ -120,6 +123,10 @@ export default function DiscoveryMap({
       ) as HTMLElement | null;
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      const marker = markerRefs.current[selectedLocation.name];
+      if (marker) {
+        marker.openPopup();
       }
     }
   }, [selectedLocation]);
@@ -164,7 +171,7 @@ export default function DiscoveryMap({
 
           {/* Project Location Marker */}
 
-          {allFilteredData && allFilteredData.projects.length > 0
+          {/* {allFilteredData && allFilteredData.projects.length > 0
             ? allFilteredData.projects.map((project: projectListing) => (
                 <Marker
                   position={[project.latitude, project.longitude]}
@@ -175,7 +182,47 @@ export default function DiscoveryMap({
                   )}
                 />
               ))
-            : null}
+            : null} */}
+          {allFilteredData && allFilteredData.projects.length > 0 ? (
+            <MarkerClusterGroup
+              chunkedLoading
+              showCoverageOnHover={false}
+              maxClusterRadius={50}
+            >
+              {allFilteredData.projects.map((project: projectListing) => (
+                // <Marker
+                //   key={project.id}
+                //   position={[project.latitude, project.longitude]}
+                //   icon={getOtherLocationIcon(
+                //     project.name,
+                //     selectedProperty?.id === project.id
+                //   )}
+                // />
+                <Marker
+                  key={project.id}
+                  position={[project.latitude, project.longitude]}
+                  icon={getOtherLocationIcon(
+                    project.name,
+                    selectedProperty?.id === project.id
+                  )}
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedLocation({
+                        lat: project.latitude,
+                        lon: project.longitude,
+                        name: project.name,
+                      });
+                    },
+                  }}
+                  ref={(ref) => {
+                    if (ref) {
+                      markerRefs.current[project.name] = ref;
+                    }
+                  }}
+                />
+              ))}
+            </MarkerClusterGroup>
+          ) : null}
           {selectedLocation && selectedProperty && (
             <Popup
               position={[selectedLocation.lat, selectedLocation.lon]}
