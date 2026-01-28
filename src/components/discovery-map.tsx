@@ -170,19 +170,6 @@ export default function DiscoveryMap({
           <MapController selectedLocation={selectedLocation} />
 
           {/* Project Location Marker */}
-
-          {/* {allFilteredData && allFilteredData.projects.length > 0
-            ? allFilteredData.projects.map((project: projectListing) => (
-                <Marker
-                  position={[project.latitude, project.longitude]}
-                  key={project.id}
-                  icon={getOtherLocationIcon(
-                    project.name,
-                    selectedProperty?.id == project.id
-                  )}
-                />
-              ))
-            : null} */}
           {allFilteredData && allFilteredData.projects.length > 0 ? (
             <MarkerClusterGroup
               chunkedLoading
@@ -190,14 +177,6 @@ export default function DiscoveryMap({
               maxClusterRadius={50}
             >
               {allFilteredData.projects.map((project: projectListing) => (
-                // <Marker
-                //   key={project.id}
-                //   position={[project.latitude, project.longitude]}
-                //   icon={getOtherLocationIcon(
-                //     project.name,
-                //     selectedProperty?.id === project.id
-                //   )}
-                // />
                 <Marker
                   key={project.id}
                   position={[project.latitude, project.longitude]}
