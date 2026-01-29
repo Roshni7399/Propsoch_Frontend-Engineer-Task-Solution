@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig:NextConfig = {
   reactStrictMode: false,
   distDir: "build",
+  output: 'export',
   images: {
     remotePatterns: [
       {
