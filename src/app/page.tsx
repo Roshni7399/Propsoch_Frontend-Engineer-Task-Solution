@@ -26,13 +26,13 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <div className="w-screen h-screen flex">
+    <div className="w-screen h-screen flex flex-col md:flex-row">
       {/* Map Section */}
-      <div className="flex-1">
+      <div className="flex-1 md:flex-1 h-1/2 md:h-full">
         <MapWrapper allFilteredData={PropertyListing} />
       </div>
       {/* List Section */}
-      <div className="w-1/3 border-l border-gray-200">
+      <div className="w-full md:w-1/3 h-1/2 md:h-full border-t md:border-t-0 md:border-l border-gray-200">
         <ListView projects={PropertyListing.projects as projectListing[]} />
       </div>
     </div>
